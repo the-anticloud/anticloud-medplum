@@ -1,0 +1,374 @@
+{
+  "category": "MEDICAL_HEALTH",
+  "checks": {
+    "01_loc_files": {
+      "check": "LOC / file census",
+      "detail": {
+        "blank_lines": 71358,
+        "code_files": 3055,
+        "comment_lines": 60012,
+        "effective_loc": 555809,
+        "total_lines": 687179
+      },
+      "metric": "loc",
+      "pass": true,
+      "threshold": "> 1000 effective LOC",
+      "value": 555809
+    },
+    "02_licence": {
+      "check": "Licence classification gate",
+      "detail": {
+        "first_line": "Apache License",
+        "licence_class": "A",
+        "licence_file": "UPSTREAM_CLONE\\LICENSE.txt",
+        "licence_sha256": "3f71ef0e9bbbca12f72c67d03f3977b0b14870baab9e677b9dfdf096713500d9",
+        "rationale": "Apache-2.0 detected -> class A (may vendor+relicense w/ attribution)",
+        "redistribution": "may vendor, modify, relicense and append Anticommons, push as ours WITH attribution"
+      },
+      "pass": true,
+      "threshold": "licence_class in {A,B,C}; A required for push",
+      "value": "A"
+    },
+    "03_dependency_scan": {
+      "check": "Dependency inventory + forbidden-AI gate",
+      "detail": {
+        "declared_dependency_count": 0,
+        "dependencies": {},
+        "forbidden_ai_deps": [],
+        "manifests_found": []
+      },
+      "pass": true,
+      "threshold": "no pytorch/torch/transformers",
+      "value": 0
+    },
+    "04_sbom": {
+      "check": "SBOM generation",
+      "components_file_inline": [],
+      "detail": {
+        "bom_format": "CycloneDX",
+        "component_count": 0,
+        "format": "CycloneDX-1.5-lite",
+        "spec_version": "1.5",
+        "tool": "anticloud-bench/1.0"
+      },
+      "pass": false,
+      "threshold": "component_count > 0",
+      "value": 0
+    },
+    "05_git_health": {
+      "check": "Git provenance health",
+      "detail": {
+        "commit_count_shallow": "5",
+        "dirty_files": 366,
+        "distinct_authors_recent": 1,
+        "head_date": "2026-09-29 11:06:59 +0400",
+        "head_sha": "",
+        "is_git_repo": true,
+        "last_author": "Claude Haiku 4.5",
+        "remote_origin": null
+      },
+      "pass": true,
+      "threshold": "is_git_repo and head_sha present",
+      "value": ""
+    },
+    "06_owasp_llm_top10": {
+      "check": "OWASP LLM Top 10",
+      "controls_met": 2,
+      "controls_total": 4,
+      "evidence": [
+        "LLM03 supply chain: no torch/transformers/pytorch dependency pulled in",
+        "LLM01: prompt-injection surface not applicable - no LLM runtime in product path"
+      ],
+      "framework": "OWASP Top 10 for LLM Apps (2025)",
+      "gaps": [
+        "LLM08: no dependency manifest -> unpinned supply chain",
+        "LLM09: overreliance - no model-evidence/eval harness in scope (no LLM product)"
+      ],
+      "note": "AI/LLM-latency checks explicitly EXCLUDED per policy; assessed only as supply-chain posture.",
+      "pass": false,
+      "score": 50.0,
+      "threshold": "score >= 70"
+    },
+    "07_owasp_top10": {
+      "check": "OWASP Top 10",
+      "controls_met": 2,
+      "controls_total": 5,
+      "evidence": [
+        "A02:2021 no weak MD5 usage detected in first-party code",
+        "A02:2021 no TLS verification disabled (verify=False)"
+      ],
+      "framework": "OWASP Top 10 (2021)",
+      "gaps": [
+        "A07:2021 3 hardcoded credential candidate(s)",
+        "A03:2021 12 injection sink pattern(s)",
+        "A06:2021 no static-analysis configuration in gate"
+      ],
+      "pass": false,
+      "score": 40.0,
+      "threshold": "score >= 70"
+    },
+    "08_soc1": {
+      "check": "SOC 1",
+      "controls_met": 1,
+      "controls_total": 4,
+      "evidence": [
+        "CC7.3/CC7.4: versioned change history with 1 recent author(s)"
+      ],
+      "framework": "AICPA SOC 1 (2017 revised)",
+      "gaps": [
+        "CC7.2: no CI workflow => no change-management evidence",
+        "CC6.1: 3 hardcoded secret candidate(s)",
+        "CC7.2: no automated static-analysis gate"
+      ],
+      "pass": false,
+      "score": 25.0,
+      "threshold": "score >= 70"
+    },
+    "09_soc2_type2": {
+      "check": "SOC 2 Type II",
+      "controls_met": 1,
+      "controls_total": 7,
+      "evidence": [
+        "CC7.3/CC7.4: versioned change history with 1 recent author(s)"
+      ],
+      "framework": "AICPA SOC 2 Type II (2017 revised, TSC)",
+      "gaps": [
+        "CC7.2: no CI workflow => no change-management evidence",
+        "CC6.1: 3 hardcoded secret candidate(s)",
+        "CC7.2: no automated static-analysis gate",
+        "CC7.1: no vulnerability-management artefact (patches/config) present",
+        "CC7.1: no SBOM",
+        "CC8.1: no changelog"
+      ],
+      "note": "Type II additionally requires an observation period; scored on control design + evidence present in the repository.",
+      "pass": false,
+      "score": 14.3,
+      "threshold": "score >= 70"
+    },
+    "10_nist_ai_rmf": {
+      "check": "NIST AI RMF",
+      "controls_met": 2,
+      "controls_total": 5,
+      "evidence": [
+        "GOVERN 1.1: deterministic, reproducible benchmark run recorded as JSON evidence",
+        "MEASURE 2.5: no unapproved ML model runtime in graph (measurable scope)"
+      ],
+      "framework": "NIST AI RMF 1.0 (Playbook)",
+      "gaps": [
+        "MAP 2.3: benchmark not wired into CI",
+        "MANAGE 2.2: unmanaged credential artefacts present",
+        "MANAGE 4.1: no AI system in scope - AI RMF risk register is N/A"
+      ],
+      "pass": false,
+      "score": 40.0,
+      "threshold": "score >= 70"
+    },
+    "11_nist_sp800_53": {
+      "check": "NIST SP 800-53 Rev.5",
+      "controls_met": 3,
+      "controls_total": 6,
+      "evidence": [
+        "AU-3/AU-10: change provenance recorded (1 recent authors)",
+        "SC-13: SHA-256 cryptographically protected artefacts",
+        "SI-7: integrity verifiable by pinned commit 83b357604d34"
+      ],
+      "framework": "NIST SP 800-53 Rev.5 (moderate baseline)",
+      "gaps": [
+        "SA-11: no static analysis configuration",
+        "IA-5: 3 hardcoded credential candidate(s)",
+        "CM-10: no hash-pinned dependency lock"
+      ],
+      "pass": false,
+      "score": 50.0,
+      "threshold": "score >= 70"
+    },
+    "12_nist_csf": {
+      "check": "NIST CSF 2.0",
+      "controls_met": 2,
+      "controls_total": 5,
+      "evidence": [
+        "ID.AM-1: software inventory produced (SBOM + LOC census)",
+        "DE.CM-1: change monitoring via version control history"
+      ],
+      "framework": "NIST CSF 2.0 (functions)",
+      "gaps": [
+        "PR.PS-1: no repeatable CI process",
+        "PR.AA-1: embedded credential candidates present",
+        "RS.AN-1: no vulnerability-response artefact"
+      ],
+      "pass": false,
+      "score": 40.0,
+      "threshold": "score >= 70"
+    },
+    "13_fedramp": {
+      "check": "FedRAMP Rev.5",
+      "controls_met": 1,
+      "controls_total": 5,
+      "evidence": [
+        "AU-6: audit records present (1 recent authors)"
+      ],
+      "framework": "FedRAMP Rev.5 (20x20 moderate)",
+      "gaps": [
+        "SA-10: no CI change control",
+        "SA-25: 3 secret / 12 sink finding(s)",
+        "SA-11: static analysis not configured",
+        "CM-8: no SBOM asset inventory"
+      ],
+      "note": "FedRAMP requires an agency ATO; this is a readiness gap assessment against the moderate baseline, not an authorization.",
+      "pass": false,
+      "score": 20.0,
+      "threshold": "score >= 70"
+    },
+    "14_pci_dss": {
+      "check": "PCI DSS v4.0.1",
+      "controls_met": 1,
+      "controls_total": 5,
+      "evidence": [
+        "Req 3.5: no weak MD5 use detected for key derivation"
+      ],
+      "framework": "PCI DSS v4.0.1",
+      "gaps": [
+        "Req 8: 3 hardcoded credential candidate(s)",
+        "Req 6.4.3: no inventory to drive patch/vuln detection",
+        "Req 6.4.2: no automated change detection",
+        "Req 6.3.2: no vulnerability scanning configured"
+      ],
+      "note": "Applicability depends on whether the artefact handles cardholder data.",
+      "pass": false,
+      "score": 20.0,
+      "threshold": "score >= 70"
+    },
+    "15_iso_27001": {
+      "check": "ISO/IEC 27001:2022",
+      "controls_met": 2,
+      "controls_total": 5,
+      "evidence": [
+        "A.8.15/A.8.32: change logging via version control",
+        "A.8.32/IP: permissive licence permits governed redistribution"
+      ],
+      "framework": "ISO/IEC 27001:2022 Annex A",
+      "gaps": [
+        "A.5.17: 3 credential candidate(s)",
+        "A.8.32: change management not automated",
+        "A.8.19: no hash-pinned dependency lock"
+      ],
+      "pass": false,
+      "score": 40.0,
+      "threshold": "score >= 70"
+    },
+    "16_mitre_attack": {
+      "check": "MITRE ATT&CK",
+      "controls_met": 4,
+      "controls_total": 7,
+      "evidence": [
+        "T1059.004 Unix Shell: no shell=True construction",
+        "T1557 Adversary-in-the-Middle: no disabled TLS verification",
+        "T1195 Supply Chain Compromise: commit 83b357604d34 pinned for provenance",
+        "T1059.004: no remote-script pipe-to-shell bootstrap"
+      ],
+      "framework": "MITRE ATT&CK v17 (software supply chain + host techniques)",
+      "gaps": [
+        "T1552.001 Credentials In Files: 3 finding(s)",
+        "T1059: eval() sink present",
+        "T1195.002: no CI gate to detect supply-chain drift"
+      ],
+      "pass": false,
+      "score": 57.1,
+      "threshold": "score >= 70"
+    },
+    "17_ml_trl": {
+      "check": "ML-TRL",
+      "controls_met": 2,
+      "controls_total": 5,
+      "evidence": [
+        "TRL-9 reproducibility: no unmeasured ML runtime in the graph",
+        "TRL-8/9: benchmark harness emits machine-readable JSON, no AI/LLM-latency measurement in scope (excluded by policy)"
+      ],
+      "framework": "NIST AI RMF / ML-TRL (technology readiness levels)",
+      "gaps": [
+        "TRL-6: no repeatable verification harness",
+        "TRL-2: changes not documented across versions",
+        "TRL-4: no version enumeration"
+      ],
+      "note": "ML-TRL dimensions assessed for software-integrity applicability; model-training TRL dimensions are N/A (no ML training in scope).",
+      "pass": false,
+      "score": 40.0,
+      "threshold": "score >= 70"
+    },
+    "18_ci_static_gate": {
+      "check": "CI + static-analysis gate",
+      "detail": {
+        "ci_present": false,
+        "ci_workflows": [],
+        "pass": false,
+        "static_analysis_configs": [],
+        "static_gate_present": false
+      },
+      "pass": false,
+      "threshold": "CI and static gate both present",
+      "value": false
+    }
+  },
+  "duration_seconds": 2161.692,
+  "excluded_by_policy": [
+    "all AI/LLM-latency benchmarks",
+    "pytorch",
+    "torch",
+    "transformers"
+  ],
+  "failed_checks": [
+    "04_sbom",
+    "06_owasp_llm_top10",
+    "07_owasp_top10",
+    "08_soc1",
+    "09_soc2_type2",
+    "10_nist_ai_rmf",
+    "11_nist_sp800_53",
+    "12_nist_csf",
+    "13_fedramp",
+    "14_pci_dss",
+    "15_iso_27001",
+    "16_mitre_attack",
+    "17_ml_trl",
+    "18_ci_static_gate"
+  ],
+  "generated_utc": "2026-10-05T14:17:48.077518+00:00",
+  "git": {
+    "commit_count_shallow": "5",
+    "dirty_files": 366,
+    "distinct_authors_recent": 1,
+    "head_date": "2026-09-29 11:06:59 +0400",
+    "head_sha": "",
+    "is_git_repo": true,
+    "last_author": "Claude Haiku 4.5",
+    "remote_origin": null
+  },
+  "harness": "anticloud-bench/1.0",
+  "licence": {
+    "first_line": "Apache License",
+    "licence_class": "A",
+    "licence_file": "UPSTREAM_CLONE\\LICENSE.txt",
+    "licence_sha256": "3f71ef0e9bbbca12f72c67d03f3977b0b14870baab9e677b9dfdf096713500d9",
+    "rationale": "Apache-2.0 detected -> class A (may vendor+relicense w/ attribution)",
+    "redistribution": "may vendor, modify, relicense and append Anticommons, push as ours WITH attribution"
+  },
+  "path": "E:\\fenta\\Downloads\\The Anticloud\\ANTICLOUD_REPOS\\MEDICAL_HEALTH\\MEDPLUM",
+  "repo": "MEDPLUM",
+  "schema": "anticloud.tier.bench/1.0",
+  "source_census": {
+    "blank_lines": 71358,
+    "code_files": 3055,
+    "comment_lines": 60012,
+    "effective_loc": 555809,
+    "total_lines": 687179
+  },
+  "summary": {
+    "all_pass": false,
+    "checks_failed": 14,
+    "checks_passed": 4,
+    "checks_total": 18,
+    "licence_class": "A",
+    "pass_rate": 22.2
+  },
+  "versioning": {}
+}
